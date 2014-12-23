@@ -11,6 +11,7 @@ module ActiveModel
 
         def serializable_hash(options = {})
           @root = (@options[:root] || serializer.json_key.to_s.pluralize).to_sym
+          @hash[:meta] = @options.delete(:meta) unless @options[:meta].nil?
 
           if serializer.respond_to?(:each)
             @hash[@root] = serializer.map do |s|
@@ -18,7 +19,6 @@ module ActiveModel
             end
           else
             @hash[@root] = attributes_for_serializer(serializer, @options)
-
             add_resource_links(@hash[@root], serializer)
           end
 
